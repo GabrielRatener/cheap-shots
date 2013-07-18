@@ -1,4 +1,6 @@
-var Gallery = (function(){
+
+
+var CheapShots = (function(){
 	var PLAY = false;
 	var I = -1;
 	var INTERVAL = 5;	// in seconds
@@ -18,11 +20,24 @@ var Gallery = (function(){
 	
 	var CONTEXTS = [];
 	var ELEMENT;
-	var ELEMENTS = {};
+
 	var TILES;
 	var TIMEOUT;
 	var DOM = {};
-	
+
+	var PATH = (function(){
+		var scripts = document.getElementsByTagName("script");
+		for (var i = 0; i < scripts.length; i++) {
+			var path = scripts[i].getAttribute("src").split("/");
+			if(path[path.length - 1] == "cheap-shots.js"){
+
+				return path.pop().join("/") + "/";
+			}
+		}
+
+		return false;
+	}());
+
 	var CONTROLLER = (function(){	// includes state views
 		/*
 		This object deals with all controlls of the gallery be it and updating the controllers' views to
@@ -87,7 +102,7 @@ var Gallery = (function(){
 				c.moveTo(w/5, 2*h/5);
 				c.lineTo(4*w/5, 2*h/5);
 				c.stroke();
-				
+					
 				c.beginPath();
 				c.moveTo(w/5, 3*h/5);
 				c.lineTo(4*w/5, 3*h/5);
@@ -123,15 +138,15 @@ var Gallery = (function(){
 		
 		this.setLoader = function(e){
 			LOADER.sonic = new Sonic({
-			    width: 100,
-			    height: 100,
-			    fillColor: '#55bbbb',
-			    path: [
-			        ['line', 10, 10, 90, 10],
-			        ['line', 90, 10, 90, 90],
-			        ['line', 90, 90, 10, 90],
-			        ['line', 10, 90, 10, 10]
-			    ]
+				 width: 100,
+				 height: 100,
+				 fillColor: '#55bbbb',
+				 path: [
+					  ['line', 10, 10, 90, 10],
+					  ['line', 90, 10, 90, 90],
+					  ['line', 90, 90, 10, 90],
+					  ['line', 10, 90, 10, 10]
+				 ]
 			});
 			
 			LOADER.element = e.get();
@@ -162,7 +177,7 @@ var Gallery = (function(){
 			canvas.setAttribute("height", canvas.clientHeight);
 		
 			canvas.onclick = function(){
-				var bool = Gallery.isPlaying();
+				var bool = CheapShots.isPlaying();
 				
 				if(bool) pause();
 				else play();
@@ -181,7 +196,7 @@ var Gallery = (function(){
 			canvas.setAttribute("height", canvas.clientHeight);
 			
 			canvas.onclick = function(){
-				var bool = Gallery.isRandom();
+				var bool = CheapShots.isRandom();
 				
 				if(bool) order();
 				else randomize();
@@ -201,7 +216,7 @@ var Gallery = (function(){
 			canvas.setAttribute("height", canvas.clientHeight);
 			
 			canvas.onclick = function(){
-				Gallery.next();	
+				CheapShots.next();	
 			}
 			
 			var w = NEXT.width = canvas.clientWidth;
@@ -224,7 +239,7 @@ var Gallery = (function(){
 			canvas.setAttribute("height", canvas.clientHeight);
 			
 			canvas.onclick = function(){
-				Gallery.prev();	
+				CheapShots.prev();	
 			}
 			
 			var w = PREV.width = canvas.clientWidth;
@@ -243,7 +258,18 @@ var Gallery = (function(){
 			
 		return this;
 	}());
-		
+	
+	function uniqueID(n){
+		do{
+			var id = "gallery_";
+			for (var i = 0; i < n; i++) {
+				id += Math.floor(10 * Math.random());
+			};
+		}while(document.getElementById(id));
+
+		return id
+	}
+
 	function shuffle(input){
 		var array = input.slice(0);
 		var l = array.length;
@@ -362,6 +388,21 @@ var Gallery = (function(){
 		return true;
 	}
 	
+	function set(boot){
+		ELEMENT = boot.append("viewer","div").giveClass("arkanvas");
+		for(var i = 0; i < 2; i++){
+			var c = ELEMENT.append("canvas").giveClass("arkanvas").get();
+			CONTEXTS.push(c.getContext("2d"));
+			c.setAttribute("context", i);
+		}
+		
+		window.onresize = function(){
+			resetDimentions();	
+		}
+		
+		return resetDimentions();
+	}
+
 	this.isPlaying = function(){
 		return PLAY;
 	}
@@ -451,34 +492,37 @@ var Gallery = (function(){
 		
 		displayImageByIndex(i, function(){}, 0);
 	}
-	
-	function set(boot){
-		ELEMENT = boot.append("viewer","div").giveClass("arkanvas");
-		for(var i = 0; i < 2; i++){
-			var c = ELEMENT.append("canvas").giveClass("arkanvas").get();
-			CONTEXTS.push(c.getContext("2d"));
-			c.setAttribute("context", i);
-		}
 		
-		window.onresize = function(){
-			resetDimentions();	
-		}
-		
-		return resetDimentions();
-	}
-	
 	this.element = function(element){
-		var root = new Element("div");
-		var oot = root.giveClass("arkanvas").get();
-		
-		oot.setAttribute("id", "gallery_test");
-		element.appendChild(oot);
-		
-		set(root);					
-		CONTROLLER.set(root);
-		
-		DOM.root = root;
-		DOM.container = element;
+		var head = document.getElementsByTagName('head')[0];
+
+		var styleId = uniqueID(10);
+		var link = document.createElement('link');
+		link.setAttribute('rel', 'stylesheet');
+		link.setAttribute('type', 'text/css');
+		link.setAttribute('href', PATH + 'styles/CSS.php?id=' + styleId);
+		link.onload = function(){
+			var script = document.createElement("script");
+			script.setAttribute("type", "text/javascript");
+			script.setAttribute("src", PATH + "dependencies/Element.js");
+			script.onload = function(){
+				var root = new Element("div");
+				var oot = root.giveClass("arkanvas").get();
+				oot.setAttribute("id", styleId);
+				element.appendChild(oot);
+				
+				set(root);					
+				CONTROLLER.set(root);
+				
+				DOM.root = root;
+				DOM.container = element;
+			}
+			
+			head.appendChild(script);
+		}
+
+		head.appendChild(link);
+
 		return true;
 	}
 	
