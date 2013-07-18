@@ -1,5 +1,3 @@
-
-
 var CheapShots = (function(){
 	var PLAY = false;
 	var I = -1;
@@ -27,9 +25,10 @@ var CheapShots = (function(){
 
 	var PATH = (function(){
 		var scripts = document.getElementsByTagName("script");
-		for (var i = 0; i < scripts.length; i++) {
+		for (var i = 0; i < scripts.length; i++) {Ï
 			var path = scripts[i].getAttribute("src").split("/");
-			if(path[path.length - 1] == "cheap-shots.js"){
+			if(path[path.length - 1] == "cheap-shots.js" ||
+				path[path.length - 1] == "cheap-shots.min.js"){
 
 				return path.pop().join("/") + "/";
 			}

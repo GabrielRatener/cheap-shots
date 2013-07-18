@@ -47,7 +47,7 @@ Element.prototype.giveClass = function(){
 	
 	elem.setAttribute("class", arey.join(" "));
 	return this;
-}			
+}
 
 Element.prototype.takeClass = function(){
 	var elem = this.get();
