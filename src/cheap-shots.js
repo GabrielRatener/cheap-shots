@@ -27,8 +27,7 @@ var CheapShots = (function(){
 		var scripts = document.getElementsByTagName("script");
 		for (var i = 0; i < scripts.length; i++) {Ï
 			var path = scripts[i].getAttribute("src").split("/");
-			if(path[path.length - 1] == "cheap-shots.js" ||
-				path[path.length - 1] == "cheap-shots.min.js"){
+			if(path[path.length - 1] == "cheap-shots.js"){
 
 				return path.pop().join("/") + "/";
 			}

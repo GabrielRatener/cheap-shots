@@ -86,4 +86,3 @@
                 padding: 0px;
                 margin: 0px;
         }
-ameriem3@americansmovingtofrance.com [~/public_html/mathweirdo]# 
