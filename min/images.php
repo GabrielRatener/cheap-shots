@@ -1,4 +1,6 @@
 <?php
+	error_reporting(0);
+	
 	/*
 	//////////////////////////
 	// Currently not in use //
@@ -19,8 +21,6 @@
 		return $new;
 	}
 	*/
-
-	error_reporting(0);
 	
 	$ALL = "*.{[jJ][pP][gG],[pP][nN][gG],[gG][iI][fF]}";
 

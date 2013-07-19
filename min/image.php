@@ -49,14 +49,13 @@
 				$sh = 0;
 			}
 		}
-
+		
 		imagecopyresampled($out, $in, 0, 0, $sw, $sh, $width, $height, $cw, $ch);
-		header("content-type: ".image_type_to_mime_type($type));
 
-		if($type == 1) imagegif($out);
-		else if($type == 2) imagejpeg($out);
-		else if($type == 3) imagepng($out);
-		else imagejpeg($out);
+		$t = ($type <= 3 && $type > 0) ? $type : 2;
+		header("content-type: ".image_type_to_mime_type($t));
+
+		if($t == 1) imagegif($out);
+		else if($t == 2) imagejpeg($out);
+		else if($t == 3) imagepng($out);
 	}
-
-?>
