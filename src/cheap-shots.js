@@ -504,7 +504,7 @@ var CheapShots = (function(){
 			script.setAttribute("type", "text/javascript");
 			script.setAttribute("src", PATH + "dependencies/Element.js");
 			script.onload = function(){
-				var root = new Element("div");
+				var root = Element.new("div");
 				var oot = root.giveClass("arkanvas").get();
 				oot.setAttribute("id", styleId);
 				element.appendChild(oot);
